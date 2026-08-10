@@ -1,27 +1,23 @@
 class Solution {
 public:
     int stoneGameVI(vector<int>& aliceValues, vector<int>& bobValues) {
-        int n = aliceValues.size();
-        vector<vector<int>> bucket(201);
-        for (int i = 0; i < n; i++) {
-            bucket[aliceValues[i] + bobValues[i]].push_back(i);
+        vector<vector<pair<int,int>>> bucket(201);
+        for (int i = 0; i < aliceValues.size(); i++) {
+            int sum = aliceValues[i] + bobValues[i];
+            bucket[sum].push_back({aliceValues[i], bobValues[i]});
         }
-        int alice = 0;
-        int bob = 0;
+        int alice = 0, bob = 0;
         int turn = 0;
         for (int sum = 200; sum >= 2; sum--) {
-            for (int idx : bucket[sum]) {
+            for (auto [a, b] : bucket[sum]) {
                 if (turn % 2 == 0)
-                    alice += aliceValues[idx];
+                    alice += a;
                 else
-                    bob += bobValues[idx];
+                    bob += b;
+
                 turn++;
             }
         }
-        if (alice > bob)
-            return 1;
-        if (alice < bob)
-            return -1;
-        return 0;
+        return (alice > bob) ? 1 : (alice < bob ? -1 : 0);
     }
 };
