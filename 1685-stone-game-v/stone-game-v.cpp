@@ -1,28 +1,32 @@
 class Solution {
 public:
     int stoneGameV(vector<int>& stoneValue) {
-        vector<vector<int>>dp(stoneValue.size(),vector<int>(stoneValue.size(),0));
-        for(int i=stoneValue.size()-1;i>=0;i--){
-            for(int j=0;j<stoneValue.size();j++){
-                if(i>j) continue;
-                long long sum=0LL;
-                for(int k=i;k<=j;k++) sum+=stoneValue[k];
-                int left=0;
-                for(int k=i+1;k<=j;k++){
-                    left+=stoneValue[k-1];
-                    int right=sum-left;
-                    if(left>right){
-                        dp[i][j]=max(dp[i][j],max(dp[i][j],right+dp[k][j]));
+        int n = stoneValue.size();
+        vector<int> prefix(n + 1, 0);
+        for (int i = 0; i < n; i++) {
+            prefix[i + 1] = prefix[i] + stoneValue[i];
+        }
+        vector<vector<int>> dp(n, vector<int>(n, 0));
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = i + 1; j < n; j++) {
+                int total = prefix[j + 1] - prefix[i];
+                int left = 0;
+                for (int k = i + 1; k <= j; k++) {
+                    left = prefix[k] - prefix[i];
+                    int right = total - left;
+                    if (left < right) {
+                        dp[i][j] = max(dp[i][j],left + dp[i][k - 1]);
                     }
-                    else if(left<right){
-                        dp[i][j]=max(dp[i][j],max(dp[i][j],left+dp[i][k-1]));
+                    else if (left > right) {
+                        dp[i][j] = max(dp[i][j],right + dp[k][j]);
                     }
-                    else{
-                        dp[i][j]=max(dp[i][j],max(right+dp[k][j],left+dp[i][k-1]));
+                    else {
+                        dp[i][j] = max(dp[i][j],max(left + dp[i][k - 1],right + dp[k][j])
+                        );
                     }
                 }
             }
         }
-        return dp[0][stoneValue.size()-1];
+        return dp[0][n - 1];
     }
 };
