@@ -19,7 +19,7 @@ public:
         }
         for(int i=1;i<n;i++){
             if(s[i]==mx) 
-            hasMaxInSuffix = true;
+            hasMaxInSuffix=true;
         }
         if(!hasMinInPrefix&&!hasMaxInSuffix) 
         return 3;
